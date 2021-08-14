@@ -1,0 +1,80 @@
+<!--
+ * @Author: PlanC
+ * @Date: 2021-08-14 18:52:40
+ * @LastEditors: PlanC
+ * @Description: calculate your perico income
+ * @FilePath: \Perico_calc\index.html
+-->
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        html body {
+            width: 100%;
+            height: 100%;
+        }
+
+        el-row {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <title>Perico_calc</title>
+</head>
+<body>
+    <div id="app">
+        <el-row type="flex" align="middle">
+            <el-col :span="24"><i class="el-icon-coin"></i>Perico</el-col>
+        </el-row>
+
+        <div>
+            <el-radio-group v-model="radio1">
+                <el-radio-button label="1">西西米托龙舌兰(900,000/990,000)</el-radio-button>
+                <el-radio-button label="2">红宝石项链(1,000,000/1,100,000)</el-radio-button>
+                <el-radio-button label="3">不记名债券(1,100,000/1,210,000)</el-radio-button>
+                <el-radio-button label="4">粉钻(1,300,000/1,430,000)</el-radio-button>
+                <el-radio-button label="0">猎豹雕像(1,900,000/2,090,000)</el-radio-button>
+            </el-radio-group>
+        </div>
+
+        <el-row :gutter="20">
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+                    
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                radio1 = 0
+            }
+        })
+    </script>
+</body>
+</html>
