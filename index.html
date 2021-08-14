@@ -98,13 +98,13 @@
             <el-col :span="12">
                 <div class="block">
                     <span class="demonstration">玩家1：{{income * player1_cut / 100 + elite_challenge}} | {{player1_cut}}% | {{elite_challenge}}</span>
-                    <el-slider :min="15" :max="85" v-model="player1_cut" :step="5" @change="cut_change" show-stops></el-slider>
+                    <el-slider :min="0" :max="100" v-model="player1_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
             <el-col :span="12">
                 <div class="block">
                     <span class="demonstration">玩家2：{{income * player2_cut / 100 + elite_challenge}} | {{player2_cut}}% | {{elite_challenge}}</span>
-                    <el-slider :min="15" :max="85" v-model="player2_cut" :step="5" @change="cut_change" show-stops></el-slider>
+                    <el-slider :min="0" :max="100" v-model="player2_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
         </el-row>
@@ -112,13 +112,13 @@
             <el-col :span="12">
                 <div class="block">
                     <span class="demonstration">玩家3：{{income * player3_cut / 100 + elite_challenge}} | {{player3_cut}}% | {{elite_challenge}}</span>
-                    <el-slider :min="15" :max="85" v-model="player3_cut" :step="5" @change="cut_change" show-stops></el-slider>
+                    <el-slider :min="0" :max="100" v-model="player3_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
             <el-col :span="12">
                 <div class="block">
                     <span class="demonstration">玩家4：{{income * player4_cut / 100 + elite_challenge}} | {{player4_cut}}% | {{elite_challenge}}</span>
-                    <el-slider :min="15" :max="85" v-model="player4_cut" :step="5" @change="cut_change" show-stops></el-slider>
+                    <el-slider :min="0" :max="100" v-model="player4_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
         </el-row>
