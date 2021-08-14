@@ -16,53 +16,95 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <style>
-        html body {
-            width: 100%;
-            height: 100%;
-        }
-
-        el-row {
-            width: 100%;
-            height: 100%;
-        }
     </style>
     <title>Perico_calc</title>
 </head>
 <body>
     <div id="app">
-        <el-row type="flex" align="middle">
-            <el-col :span="24"><i class="el-icon-coin"></i>Perico</el-col>
-        </el-row>
-
+        <el-divider content-position="left">难度等级</el-divider>
         <div>
-            <el-radio-group v-model="radio1">
-                <el-radio-button label="1">西西米托龙舌兰(900,000/990,000)</el-radio-button>
-                <el-radio-button label="2">红宝石项链(1,000,000/1,100,000)</el-radio-button>
-                <el-radio-button label="3">不记名债券(1,100,000/1,210,000)</el-radio-button>
-                <el-radio-button label="4">粉钻(1,300,000/1,430,000)</el-radio-button>
-                <el-radio-button label="0">猎豹雕像(1,900,000/2,090,000)</el-radio-button>
+            <el-switch style="display: block" v-model="hard_mode" active-color="#ff4949" inactive-color="#13ce66" active-text="困难" inactive-text="正常" @change="difficulty_Change">
+            </el-switch>
+        </div>
+
+        <el-divider content-position="left">主要目标</el-divider>
+        <div>
+            <el-radio-group v-model="main_loot" @change="main_loot_change()">
+                <el-radio-button label="900000">西西米托龙舌兰(900,000/990,000)</el-radio-button>
+                <el-radio-button label="1000000">红宝石项链(1,000,000/1,100,000)</el-radio-button>
+                <el-radio-button label="1100000">不记名债券(1,100,000/1,210,000)</el-radio-button>
+                <el-radio-button label="1300000">粉钻(1,300,000/1,430,000)</el-radio-button>
+                <el-radio-button label="1900000">猎豹雕像(1,900,000/2,090,000)</el-radio-button>
             </el-radio-group>
         </div>
 
+        <el-divider content-position="left">次要目标</el-divider>
+        <div>
+            <el-row :gutter="20">
+                <el-col :span="4">
+                    <b>钱柜</b></br/>
+                    <el-input-number v-model="lock" @change="lock_Counter_Change" :min="0" :max="1" label="钱柜"></el-input-number>
+                </el-col>
+                <el-col :span="4">
+                    <b>现金</b></br/>
+                    <el-input-number v-model="cash" @change="cash_Counter_Change" :min="0" :max="16" label="现金"></el-input-number>
+                </el-col>
+                <el-col :span="4">
+                    <b>树叶</b></br/>
+                    <el-input-number v-model="leaf" @change="leaf_Counter_Change" :min="0" :max="12" label="树叶"></el-input-number>
+                </el-col>
+                <el-col :span="4">
+                    <b>画作</b></br/>
+                    <el-input-number v-model="paint" @change="paint_Counter_Change" :min="0" :max="8" label="画作"></el-input-number>
+                </el-col>
+                <el-col :span="4">
+                    <b>面粉</b></br/>
+                    <el-input-number v-model="flour" @change="flour_Counter_Change" :min="0" :max="8" label="面粉"></el-input-number>
+                </el-col>
+                <el-col :span="4">
+                    <b>黄金</b></br/>
+                    <el-input-number v-model="gold" @change="gold_Counter_Change" :min="0" :max="6" label="黄金"></el-input-number>
+                </el-col>
+            </el-row>
+        </div>
+
+        <el-divider content-position="left">其他选项</el-divider>
+        随机种子：{{random_seed}}<br/>
+        <el-checkbox v-model="sell_cost" @change="sell_cost_check">倒卖费用</el-checkbox>
+        <el-checkbox v-model="pavel_cost" @change="pavel_cost_check">帕维尔费用</el-checkbox>
+        <el-checkbox v-model="elite_challenge_status" @change="elite_check">精英挑战</el-checkbox>
+
+        <el-divider content-position="left">最终收益</el-divider>
+        <b>$ {{income.toString().replace(/\B(?=(?:\d{3})+\b)/g, ',')}}</b>
+
+        <el-divider content-position="left">分红配置</el-divider>
+        <b>{{all_cut}}%</b>
+        <el-slider :max="125" v-model="all_cut" :step="5" :marks="marks" show_stops disabled></el-slider>
         <el-row :gutter="20">
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-                    
+            <el-col :span="12">
+                <div class="block">
+                    <span class="demonstration">玩家1：{{income * player1_cut / 100 + elite_challenge}} | {{player1_cut}}% | {{elite_challenge}}</span>
+                    <el-slider :min="15" :max="85" v-model="player1_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-
+            <el-col :span="12">
+                <div class="block">
+                    <span class="demonstration">玩家2：{{income * player2_cut / 100 + elite_challenge}} | {{player2_cut}}% | {{elite_challenge}}</span>
+                    <el-slider :min="15" :max="85" v-model="player2_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <div class="block">
+                    <span class="demonstration">玩家3：{{income * player3_cut / 100 + elite_challenge}} | {{player3_cut}}% | {{elite_challenge}}</span>
+                    <el-slider :min="15" :max="85" v-model="player3_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-
+            <el-col :span="12">
+                <div class="block">
+                    <span class="demonstration">玩家4：{{income * player4_cut / 100 + elite_challenge}} | {{player4_cut}}% | {{elite_challenge}}</span>
+                    <el-slider :min="15" :max="85" v-model="player4_cut" :step="5" @change="cut_change" show-stops></el-slider>
                 </div>
             </el-col>
         </el-row>
@@ -71,8 +113,154 @@
     <script>
         var app = new Vue({
             el: '#app',
+
             data: {
-                radio1 = 0
+                random_seed: 0,
+                hard_mode: false,
+                main_loot: 0,
+                temp: 0,
+                income: 0,
+                lock: 0,
+                cash: 0,
+                leaf: 0,
+                paint: 0,
+                flour: 0,
+                gold: 0,
+                sell_cost: 0,
+                pavel_cost: 0,
+                player1_cut: 55,
+                player2_cut: 15,
+                player3_cut: 15,
+                player4_cut: 15,
+                elite_challenge_status: 0,
+                elite_challenge: 0,
+                all_cut: 0,
+                marks: {
+                    0: "0%",
+                    25: "25%",
+                    50: "50%",
+                    75: "75%",
+                    100: "100%",
+                    125: {
+                        style: {
+                            color: "#F56C6C"
+                        },
+                        label: "125%"
+                    }
+                }
+            },
+
+            methods: {
+                difficulty_Change() {
+                    if (this.hard_mode) {
+                        this.income = (this.income - 0) + this.main_loot * 0.1;
+                    }
+                    else{
+                        this.income = (this.income - 0) - this.main_loot * 0.1;
+                    }
+                },
+
+                main_loot_change() {
+                    this.income = 0;
+                    this.income = (this.income - 0) + (this.main_loot - 0) + ((this.main_loot - 0) * 0.1 * (this.hard_mode - 0));
+                },
+                
+                lock_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (99000 + (Math.floor((50000 - 99000) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (99000 + (Math.floor((50000 - 99000) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                cash_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (87500 + (Math.floor((92500 - 87500) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (87500 + (Math.floor((92500 - 87500) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                leaf_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (145000 + (Math.floor((150000 - 145000) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (145000 + (Math.floor((150000 - 145000) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                paint_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (175000 + (Math.floor((200000 - 175000) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (175000 + (Math.floor((200000 - 175000) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                flour_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (220000 + (Math.floor((225000 - 220000) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (220000 + (Math.floor((225000 - 220000) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                gold_Counter_Change(currentValue, oldValue) {
+                    if (currentValue > oldValue) {
+                        this.income = (this.income - 0) + (328333 + (Math.floor((333333 - 328333) * this.random_seed))) * currentValue;
+                    }
+                    else {
+                        this.income = (this.income - 0) - (328333 + (Math.floor((333333 - 328333) * this.random_seed))) * oldValue;
+                    }
+                },
+
+                pavel_cost_check() {
+                    if (this.pavel_cost) {
+                        this.income = (this.income - 0) - this.income * 0.02;
+                    }
+                    else {
+                        this.income = (this.income - 0) / (1 - 0.02);
+                    }
+                },
+
+                sell_cost_check() {
+                    if (this.sell_cost) {
+                        this.income = (this.income - 0) - this.income * 0.10;
+                    }
+                    else {
+                        this.income = (this.income - 0) / (1 - 0.10);
+                    }
+                },
+
+                elite_check() {
+                    if (this.elite_challenge_status) {
+                        if (this.hard_mode) {
+                            this.elite_challenge = 100000;
+                        }
+                        else {
+                            this.elite_challenge = 50000;
+                        }
+                    }
+                    else {
+                        this.elite_challenge = 0;
+                    }
+                },
+
+                cut_change() {
+                    this.all_cut = this.player1_cut + this.player2_cut + this.player3_cut + this.player4_cut;
+                }
+            },
+            
+            created() {
+                this.random_seed = Math.random();
+                console.log(this.random_seed);
+
+                this.all_cut = this.player1_cut + this.player2_cut + this.player3_cut + this.player4_cut;
             }
         })
     </script>
